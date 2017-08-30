@@ -58,14 +58,14 @@ func main() {
 				break
 			}
 			if len(output.Records) < 1 {
-				log.Info("No records consumed\n")
+				log.Info("No records consumed")
 			}
 			for _, record := range output.Records {
 				log.Infof("Consumed %s from kinesis stream", record.Data)
 			}
 
 			shardIterator = *output.NextShardIterator
-			time.Sleep(15000 * time.Millisecond)
+			time.Sleep(10 * time.Second)
 		}
 	}
 	app.Run(os.Args)
