@@ -6,6 +6,7 @@ import (
 	"github.com/Financial-Times/simple-kinesis-consumer/kinesis"
 	"os"
 	"time"
+	"fmt"
 )
 
 func main() {
@@ -50,22 +51,25 @@ func main() {
 			log.WithError(err).Fatal("Error creating Kinesis client")
 		}
 
-		var shardIterator string = ""
+		var shardIterator = ""
 		for {
 			output, err := kinesisClient.GetRecordsFromStream(shardIterator)
 			if err != nil {
 				log.WithError(err).Error("Error consuming from stream!")
 				break
 			}
-			if len(output.Records) < 1 {
-				log.Info("No records consumed")
-			}
 			for _, record := range output.Records {
 				log.Infof("Consumed %s from kinesis stream", record.Data)
 			}
 
+			if len(output.Records) < 1 {
+				log.Info("No records consumed")
+			} else {
+				fmt.Println()
+				fmt.Println()
+			}
 			shardIterator = *output.NextShardIterator
-			time.Sleep(10 * time.Second)
+			time.Sleep(5 * time.Second)
 		}
 	}
 	app.Run(os.Args)
